@@ -11,7 +11,7 @@
     body {
       background: radial-gradient(circle at 20% 20%, #2b1d2f 0%, #0d0a10 70%);
       color: #fff;
-      font-family: "Inter", sans-serif;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -28,6 +28,7 @@
       backdrop-filter: blur(8px);
       text-align: center;
       z-index: 10;
+      padding: 2rem;
     }
 
     .lock-message {
@@ -62,14 +63,15 @@
     /* conteúdo (oculto inicialmente) */
     .content {
       display: none;
+      padding-bottom: 4rem;
     }
 
-    /* --- Estilos originais do cartão --- */
+    /* --- Estilos do cartão --- */
     .card {
       position: relative;
       max-width: 600px;
       width: calc(100% - 2rem);
-      margin: 4rem auto 6rem auto;
+      margin: 2rem auto 6rem auto;
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 24px;
@@ -78,6 +80,21 @@
         0 30px 80px rgba(255, 0, 90, 0.2),
         0 10px 30px rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(14px);
+    }
+
+    /* VÍDEO visível e centralizado no topo */
+    .video-top {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .video-top iframe {
+      width: 420px;
+      height: 236px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(255,0,128,0.3), 0 6px 18px rgba(0,0,0,0.8);
+      border: none;
     }
 
     /* FOTO (3× maior) */
@@ -141,7 +158,10 @@
       font-style: italic;
     }
 
-    .surprise-wrapper { text-align: center; margin-top: 2.5rem; }
+    .surprise-wrapper {
+      text-align: center;
+      margin-top: 2.5rem;
+    }
 
     .btn-surprise {
       appearance: none;
@@ -170,32 +190,47 @@
       text-align: center;
     }
 
-    .heart-beat { font-size: 2rem; animation: pulse 1.2s infinite; }
-    @keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.2);}100%{transform:scale(1);} }
+    .heart-beat {
+      font-size: 2rem;
+      animation: pulse 1.2s infinite;
+    }
 
-    .footer { text-align: center; color: #888; font-size: 0.8rem; margin-top: 4rem; }
+    @keyframes pulse {
+      0%   {transform:scale(1);}
+      50%  {transform:scale(1.2);}
+      100% {transform:scale(1);}
+    }
+
+    .footer {
+      text-align: center;
+      color: #888;
+      font-size: 0.8rem;
+      margin-top: 4rem;
+    }
 
     /* Chuva de corações */
-    .heart { position: fixed; top: -10vh; color: #ff5fa8; opacity: 0.8; animation: fall linear infinite; }
+    .heart {
+      position: fixed;
+      top: -10vh;
+      color: #ff5fa8;
+      opacity: 0.8;
+      animation: fall linear infinite;
+      pointer-events: none;
+      z-index: 5;
+    }
+
     @keyframes fall {
-      0% { transform: translateY(-10vh) rotate(0deg); opacity:0; }
-      10%{opacity:1;}
-      100% { transform: translateY(120vh) rotate(360deg); opacity:0; }
-    }
-
-    /* VÍDEO visível e centralizado no topo */
-    .video-top {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .video-top iframe {
-      width: 420px;
-      height: 236px;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(255,0,128,0.3), 0 6px 18px rgba(0,0,0,0.8);
-      border: none;
+      0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity:0;
+      }
+      10% {
+        opacity:1;
+      }
+      100% {
+        transform: translateY(120vh) rotate(360deg);
+        opacity:0;
+      }
     }
 
     @media (max-width: 600px) {
@@ -207,18 +242,19 @@
         width: 320px;
         height: 180px;
       }
+      .heading-main {
+        font-size: 1.6rem;
+      }
+      .message {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Música / Vídeo no topo central -->
-  <div class="video-top">
-    <iframe src="https://www.youtube.com/embed/l0wzl0P06xA?autoplay=1&loop=1&playlist=l0wzl0P06xA"
-      title="Música para você"
-      allow="autoplay; encrypted-media"
-      allowfullscreen></iframe>
-  </div>
+  <!-- Vídeo / música no topo: será injetado via JS só depois do clique -->
+  <div class="video-top" id="videoContainer"></div>
 
   <!-- Tela bloqueada -->
   <div class="lock-screen" id="lockScreen">
@@ -230,7 +266,7 @@
     <div class="countdown" id="countdown"></div>
   </div>
 
-  <!-- Conteúdo -->
+  <!-- Conteúdo principal -->
   <div class="content" id="mainContent">
     <div id="hearts-container"></div>
 
@@ -243,22 +279,21 @@
       <h1 class="heading-main">Feliz Aniversário, meu amor</h1>
 
       <p class="message">
-        
-        (Aperte play se a música não estiver tocando...)
-        
-        Hoje eu só quero te lembrar o quanto você é preciosa pra mim.
+(Aperte play se a música não estiver tocando...)
 
-        Você ilumina meus dias, acalma minhas tempestades e faz a vida ter mais sentido.
-        Nada no mundo é mais bonito pra mim do que ver você sorrindo.
+Hoje eu só quero te lembrar o quanto você é preciosa pra mim.
 
-        Eu amo pensar na gente juntos na praia, percorrendo o litoral,
-        só nós dois, vivendo aquela aventura que foi só nossa.
-        Aqueles dias têm um lugar guardado no meu coração pra sempre —
-        e ainda vamos fazer muito mais coisas juntos, muito mais viagens,
-        muito mais histórias que só a gente entende.
+Você ilumina meus dias, acalma minhas tempestades e faz a vida ter mais sentido.
+Nada no mundo é mais bonito pra mim do que ver você sorrindo.
 
-        Obrigado por ser você. Por ser doce, forte, engraçada, teimosa às vezes 😌
-        e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
+Eu amo pensar na gente juntos na praia, percorrendo o litoral,
+só nós dois, vivendo aquela aventura que foi só nossa.
+Aqueles dias têm um lugar guardado no meu coração pra sempre —
+e ainda vamos fazer muito mais coisas juntos, muito mais viagens,
+muito mais histórias que só a gente entende.
+
+Obrigado por ser você. Por ser doce, forte, engraçada, teimosa às vezes 😌
+e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
       </p>
 
       <p class="signature">
@@ -285,36 +320,42 @@
   </div>
 
   <script>
-    // Chuva de corações
+    // Pega elementos
     const heartsContainer = document.getElementById("hearts-container");
+    const btnSurpresa = document.getElementById("btnSurpresa");
+    const hiddenNote = document.getElementById("hiddenNote");
+    const lockScreen = document.getElementById("lockScreen");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const content = document.getElementById("mainContent");
+    const countdown = document.getElementById("countdown");
+    const videoContainer = document.getElementById("videoContainer");
+
+    // Data alvo (Brasil -03)
+    const targetDate = new Date("2025-10-29T00:00:00-03:00");
+
+    // Função de criar coração caindo
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
       heart.textContent = "❤";
       heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = Math.random() * 20 + 10 + "px";
-      heart.style.animationDuration = Math.random() * 4 + 4 + "s";
+      heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+      heart.style.animationDuration = (Math.random() * 4 + 4) + "s";
       heartsContainer.appendChild(heart);
       setTimeout(() => heart.remove(), 8000);
     }
 
-    // Botão surpresa
-    const btn = document.getElementById("btnSurpresa");
-    const note = document.getElementById("hiddenNote");
-    btn.addEventListener("click", () => {
-      note.style.display = note.style.display === "block" ? "none" : "block";
+    // Mostrar/ocultar a mensagem secreta "Te amo..."
+    btnSurpresa.addEventListener("click", () => {
+      hiddenNote.style.display =
+        hiddenNote.style.display === "block" ? "none" : "block";
     });
 
-    // Bloqueio por data/hora
-    const lockScreen = document.getElementById("lockScreen");
-    const unlockBtn = document.getElementById("unlockBtn");
-    const content = document.getElementById("mainContent");
-    const countdown = document.getElementById("countdown");
-    const targetDate = new Date("2025-10-29T00:00:00-03:00");
-
+    // Contagem regressiva até a data/hora liberada
     function updateCountdown() {
       const now = new Date();
       const diff = targetDate - now;
+
       if (diff <= 0) {
         unlockBtn.style.display = "inline-block";
         countdown.textContent = "Já é o seu dia! 🎉";
@@ -329,10 +370,40 @@
     setInterval(updateCountdown, 60000);
     updateCountdown();
 
+    // Cria o player do YouTube dinamicamente (só depois do clique em "Abrir Surpresa 💝")
+    function startMusic() {
+      const iframe = document.createElement("iframe");
+      iframe.src =
+        "https://www.youtube.com/embed/l0wzl0P06xA" +
+        "?autoplay=1&loop=1&playlist=l0wzl0P06xA&controls=0&disablekb=1&modestbranding=1";
+      iframe.title = "Música para você";
+      iframe.allow = "autoplay; encrypted-media";
+      iframe.allowFullscreen = true;
+
+      // mesmo estilo declarado no CSS, mas reforçado aqui pra garantir ao criar dinamicamente
+      iframe.style.width = "420px";
+      iframe.style.height = "236px";
+      iframe.style.borderRadius = "16px";
+      iframe.style.border = "none";
+      iframe.style.boxShadow =
+        "0 20px 40px rgba(255,0,128,0.3), 0 6px 18px rgba(0,0,0,0.8)";
+
+      videoContainer.appendChild(iframe);
+    }
+
+    // Clique para desbloquear tudo
     unlockBtn.addEventListener("click", () => {
+      // some a tela de bloqueio
       lockScreen.style.display = "none";
+
+      // mostra o conteúdo
       content.style.display = "block";
+
+      // começa a chuva de corações
       setInterval(createHeart, 250);
+
+      // cria o player e começa a música em loop
+      startMusic();
     });
   </script>
 </body>
