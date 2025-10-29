@@ -67,7 +67,7 @@
     /* --- Estilos originais do cartão --- */
     .card {
       position: relative;
-      max-width: 420px;
+      max-width: 600px;
       width: calc(100% - 2rem);
       margin: 4rem auto 6rem auto;
       background: rgba(255, 255, 255, 0.06);
@@ -80,16 +80,22 @@
       backdrop-filter: blur(14px);
     }
 
+    /* FOTO (3× maior) */
     .photo-wrapper {
-      width: 120px;
-      height: 120px;
+      width: 360px;
+      height: 360px;
       border-radius: 999px;
       overflow: hidden;
-      border: 2px solid rgba(255,255,255,0.6);
+      border: 3px solid rgba(255,255,255,0.6);
       box-shadow:
         0 20px 40px rgba(255, 0, 128, 0.5),
         0 6px 18px rgba(0,0,0,0.9);
-      margin: 0 auto 1.5rem auto;
+      margin: 0 auto 1.8rem auto;
+      transition: transform 0.4s ease;
+    }
+
+    .photo-wrapper:hover {
+      transform: scale(1.03);
     }
 
     .photo-wrapper img {
@@ -99,8 +105,9 @@
       object-position: center;
     }
 
+    /* Título e textos */
     .heading-small {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       font-weight: 500;
       color: #ffb2d9;
       letter-spacing: 0.08em;
@@ -111,7 +118,7 @@
 
     .heading-main {
       text-align: center;
-      font-size: 1.8rem;
+      font-size: 2rem;
       background: radial-gradient(circle at 30% 30%, #fff 0%, #ff6fa8 40%, #a1004d 70%);
       -webkit-background-clip: text;
       color: transparent;
@@ -119,7 +126,7 @@
     }
 
     .message {
-      font-size: 1rem;
+      font-size: 1.05rem;
       line-height: 1.6;
       color: #f7f7f7;
       text-align: center;
@@ -129,7 +136,7 @@
     .signature {
       text-align: center;
       margin-top: 1.5rem;
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: #ff95c9;
       font-style: italic;
     }
@@ -166,19 +173,52 @@
     .heart-beat { font-size: 2rem; animation: pulse 1.2s infinite; }
     @keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.2);}100%{transform:scale(1);} }
 
-    .footer { text-align: center; color: #888; font-size: 0.7rem; margin-top: 4rem; }
+    .footer { text-align: center; color: #888; font-size: 0.8rem; margin-top: 4rem; }
+
+    /* Chuva de corações */
     .heart { position: fixed; top: -10vh; color: #ff5fa8; opacity: 0.8; animation: fall linear infinite; }
     @keyframes fall {
       0% { transform: translateY(-10vh) rotate(0deg); opacity:0; }
       10%{opacity:1;}
       100% { transform: translateY(120vh) rotate(360deg); opacity:0; }
     }
+
+    /* VÍDEO visível e centralizado no topo */
+    .video-top {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .video-top iframe {
+      width: 420px;
+      height: 236px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(255,0,128,0.3), 0 6px 18px rgba(0,0,0,0.8);
+      border: none;
+    }
+
+    @media (max-width: 600px) {
+      .photo-wrapper {
+        width: 280px;
+        height: 280px;
+      }
+      .video-top iframe {
+        width: 320px;
+        height: 180px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Música -->
-  <iframe class="music-player" src="https://www.youtube.com/embed/l0wzl0P06xA?autoplay=1&loop=1&playlist=l0wzl0P06xA" allow="autoplay"></iframe>
+  <!-- Música / Vídeo no topo central -->
+  <div class="video-top">
+    <iframe src="https://www.youtube.com/embed/l0wzl0P06xA?autoplay=1&loop=1&playlist=l0wzl0P06xA"
+      title="Música para você"
+      allow="autoplay; encrypted-media"
+      allowfullscreen></iframe>
+  </div>
 
   <!-- Tela bloqueada -->
   <div class="lock-screen" id="lockScreen">
@@ -267,13 +307,11 @@
     const unlockBtn = document.getElementById("unlockBtn");
     const content = document.getElementById("mainContent");
     const countdown = document.getElementById("countdown");
-
-    const targetDate = new Date("2025-10-29T00:00:00-03:00"); // meia-noite horário de Brasília
+    const targetDate = new Date("2025-10-29T00:00:00-03:00");
 
     function updateCountdown() {
       const now = new Date();
       const diff = targetDate - now;
-
       if (diff <= 0) {
         unlockBtn.style.display = "inline-block";
         countdown.textContent = "Já é o seu dia! 🎉";
