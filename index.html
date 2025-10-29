@@ -111,9 +111,7 @@
       transition: transform 0.4s ease;
     }
 
-    .photo-wrapper:hover {
-      transform: scale(1.03);
-    }
+    .photo-wrapper:hover { transform: scale(1.03); }
 
     .photo-wrapper img {
       width: 100%;
@@ -220,40 +218,47 @@
     }
 
     @keyframes fall {
-      0% {
-        transform: translateY(-10vh) rotate(0deg);
-        opacity:0;
-      }
-      10% {
-        opacity:1;
-      }
-      100% {
-        transform: translateY(120vh) rotate(360deg);
-        opacity:0;
-      }
+      0% { transform: translateY(-10vh) rotate(0deg); opacity:0; }
+      10%{ opacity:1; }
+      100%{ transform: translateY(120vh) rotate(360deg); opacity:0; }
+    }
+
+    /* === SLIDE DE FOTOS === */
+    .slideshow {
+      position: relative;
+      max-width: 600px;
+      height: 340px;
+      margin: 3rem auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(255,0,128,0.3);
+    }
+
+    .slideshow img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slideshow img.active {
+      opacity: 1;
     }
 
     @media (max-width: 600px) {
-      .photo-wrapper {
-        width: 280px;
-        height: 280px;
-      }
-      .video-top iframe {
-        width: 320px;
-        height: 180px;
-      }
-      .heading-main {
-        font-size: 1.6rem;
-      }
-      .message {
-        font-size: 1rem;
-      }
+      .photo-wrapper { width: 280px; height: 280px; }
+      .video-top iframe { width: 320px; height: 180px; }
+      .slideshow { height: 240px; }
+      .heading-main { font-size: 1.6rem; }
+      .message { font-size: 1rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Vídeo / música no topo: será injetado via JS só depois do clique -->
+  <!-- Vídeo injetado após clique -->
   <div class="video-top" id="videoContainer"></div>
 
   <!-- Tela bloqueada -->
@@ -266,7 +271,7 @@
     <div class="countdown" id="countdown"></div>
   </div>
 
-  <!-- Conteúdo principal -->
+  <!-- Conteúdo -->
   <div class="content" id="mainContent">
     <div id="hearts-container"></div>
 
@@ -303,7 +308,6 @@ e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
 
       <div class="surprise-wrapper">
         <button class="btn-surprise" id="btnSurpresa">Clique aqui 💗</button>
-
         <div class="hidden-note" id="hiddenNote">
           <span class="heart-beat">❤️</span>
           <strong>Te amo mais do que consigo colocar em palavras.</strong><br><br>
@@ -313,6 +317,20 @@ e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
       </div>
     </section>
 
+    <!-- SLIDESHOW DE FOTOS -->
+    <div class="slideshow" id="slideshow">
+      <img src="foto1.jpg" class="active" alt="Foto 1">
+      <img src="foto2.jpg" alt="Foto 2">
+      <img src="foto3.jpg" alt="Foto 3">
+      <img src="foto4.jpg" alt="Foto 4">
+      <img src="foto5.jpg" alt="Foto 5">
+      <img src="foto6.jpg" alt="Foto 6">
+      <img src="foto7.jpg" alt="Foto 7">
+      <img src="foto8.jpg" alt="Foto 8">
+      <img src="foto9.jpg" alt="Foto 9">
+      <img src="foto10.jpg" alt="Foto 10">
+    </div>
+
     <footer class="footer">
       Feito especialmente para você. <br>
       Abra de novo sempre que quiser lembrar o quanto é amada. 💞
@@ -320,7 +338,7 @@ e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
   </div>
 
   <script>
-    // Pega elementos
+    // Elementos principais
     const heartsContainer = document.getElementById("hearts-container");
     const btnSurpresa = document.getElementById("btnSurpresa");
     const hiddenNote = document.getElementById("hiddenNote");
@@ -330,10 +348,9 @@ e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
     const countdown = document.getElementById("countdown");
     const videoContainer = document.getElementById("videoContainer");
 
-    // Data alvo (Brasil -03)
     const targetDate = new Date("2025-10-29T00:00:00-03:00");
 
-    // Função de criar coração caindo
+    // Corações
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
@@ -345,17 +362,16 @@ e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
       setTimeout(() => heart.remove(), 8000);
     }
 
-    // Mostrar/ocultar a mensagem secreta "Te amo..."
+    // Botão "Te amo"
     btnSurpresa.addEventListener("click", () => {
       hiddenNote.style.display =
         hiddenNote.style.display === "block" ? "none" : "block";
     });
 
-    // Contagem regressiva até a data/hora liberada
+    // Contagem regressiva
     function updateCountdown() {
       const now = new Date();
       const diff = targetDate - now;
-
       if (diff <= 0) {
         unlockBtn.style.display = "inline-block";
         countdown.textContent = "Já é o seu dia! 🎉";
@@ -366,45 +382,42 @@ e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
         countdown.textContent = `Faltam ${days}d ${hours}h ${minutes}min`;
       }
     }
-
     setInterval(updateCountdown, 60000);
     updateCountdown();
 
-    // Cria o player do YouTube dinamicamente (só depois do clique em "Abrir Surpresa 💝")
+    // Player de música
     function startMusic() {
       const iframe = document.createElement("iframe");
       iframe.src =
         "https://www.youtube.com/embed/l0wzl0P06xA" +
         "?autoplay=1&loop=1&playlist=l0wzl0P06xA&controls=0&disablekb=1&modestbranding=1";
-      iframe.title = "Música para você";
       iframe.allow = "autoplay; encrypted-media";
       iframe.allowFullscreen = true;
-
-      // mesmo estilo declarado no CSS, mas reforçado aqui pra garantir ao criar dinamicamente
       iframe.style.width = "420px";
       iframe.style.height = "236px";
-      iframe.style.borderRadius = "16px";
       iframe.style.border = "none";
+      iframe.style.borderRadius = "16px";
       iframe.style.boxShadow =
         "0 20px 40px rgba(255,0,128,0.3), 0 6px 18px rgba(0,0,0,0.8)";
-
       videoContainer.appendChild(iframe);
     }
 
-    // Clique para desbloquear tudo
+    // Desbloquear
     unlockBtn.addEventListener("click", () => {
-      // some a tela de bloqueio
       lockScreen.style.display = "none";
-
-      // mostra o conteúdo
       content.style.display = "block";
-
-      // começa a chuva de corações
       setInterval(createHeart, 250);
-
-      // cria o player e começa a música em loop
       startMusic();
     });
+
+    // SLIDE SHOW AUTOMÁTICO
+    const slides = document.querySelectorAll("#slideshow img");
+    let current = 0;
+    setInterval(() => {
+      slides[current].classList.remove("active");
+      current = (current + 1) % slides.length;
+      slides[current].classList.add("active");
+    }, 10000);
   </script>
 </body>
 </html>
