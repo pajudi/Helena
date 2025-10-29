@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surpresa especial ❤️</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: radial-gradient(circle at 20% 20%, #2b1d2f 0%, #0d0a10 70%);
+      color: #fff;
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Tela de bloqueio */
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      text-align: center;
+      z-index: 10;
+    }
+
+    .lock-message {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #ffd5eb;
+      margin-bottom: 1.5rem;
+    }
+
+    .unlock-btn {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      background: radial-gradient(circle at 20% 20%, #ff3d8e 0%, #8a003f 70%);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.9rem 1.2rem;
+      border-radius: 14px;
+      box-shadow:
+        0 20px 40px rgba(255, 0, 128, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.8);
+      display: none;
+    }
+
+    .countdown {
+      font-size: 1rem;
+      color: #ff95c9;
+      margin-top: 0.8rem;
+    }
+
+    /* conteúdo (oculto inicialmente) */
+    .content {
+      display: none;
+    }
+
+    /* --- Estilos originais do cartão --- */
+    .card {
+      position: relative;
+      max-width: 420px;
+      width: calc(100% - 2rem);
+      margin: 4rem auto 6rem auto;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 2rem 2rem 3rem;
+      box-shadow:
+        0 30px 80px rgba(255, 0, 90, 0.2),
+        0 10px 30px rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(14px);
+    }
+
+    .photo-wrapper {
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.6);
+      box-shadow:
+        0 20px 40px rgba(255, 0, 128, 0.5),
+        0 6px 18px rgba(0,0,0,0.9);
+      margin: 0 auto 1.5rem auto;
+    }
+
+    .photo-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .heading-small {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #ffb2d9;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .heading-main {
+      text-align: center;
+      font-size: 1.8rem;
+      background: radial-gradient(circle at 30% 30%, #fff 0%, #ff6fa8 40%, #a1004d 70%);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 1.5rem;
+    }
+
+    .message {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #f7f7f7;
+      text-align: center;
+      white-space: pre-line;
+    }
+
+    .signature {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #ff95c9;
+      font-style: italic;
+    }
+
+    .surprise-wrapper { text-align: center; margin-top: 2.5rem; }
+
+    .btn-surprise {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      background: radial-gradient(circle at 20% 20%, #ff3d8e 0%, #8a003f 70%);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.9rem 1.2rem;
+      border-radius: 14px;
+      box-shadow:
+        0 20px 40px rgba(255, 0, 128, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.8);
+    }
+
+    .hidden-note {
+      display: none;
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      color: #fff;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 1rem;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .heart-beat { font-size: 2rem; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.2);}100%{transform:scale(1);} }
+
+    .footer { text-align: center; color: #888; font-size: 0.7rem; margin-top: 4rem; }
+    .heart { position: fixed; top: -10vh; color: #ff5fa8; opacity: 0.8; animation: fall linear infinite; }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity:0; }
+      10%{opacity:1;}
+      100% { transform: translateY(120vh) rotate(360deg); opacity:0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Música -->
+  <iframe class="music-player" src="https://www.youtube.com/embed/l0wzl0P06xA?autoplay=1&loop=1&playlist=l0wzl0P06xA" allow="autoplay"></iframe>
+
+  <!-- Tela bloqueada -->
+  <div class="lock-screen" id="lockScreen">
+    <div class="lock-message">
+      💖 Uma surpresa te espera...<br>
+      Mas ela só pode ser aberta no dia <strong>29/10/2025</strong> 🎂
+    </div>
+    <button class="unlock-btn" id="unlockBtn">Abrir Surpresa 💝</button>
+    <div class="countdown" id="countdown"></div>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="content" id="mainContent">
+    <div id="hearts-container"></div>
+
+    <section class="card">
+      <div class="photo-wrapper">
+        <img src="foto.jpg" alt="Nós dois">
+      </div>
+
+      <div class="heading-small">Hoje é o seu dia</div>
+      <h1 class="heading-main">Feliz Aniversário, meu amor</h1>
+
+      <p class="message">
+        Hoje eu só quero te lembrar o quanto você é preciosa pra mim.
+
+        Você ilumina meus dias, acalma minhas tempestades e faz a vida ter mais sentido.
+        Nada no mundo é mais bonito pra mim do que ver você sorrindo.
+
+        Eu amo pensar na gente juntos na praia, percorrendo o litoral,
+        só nós dois, vivendo aquela aventura que foi só nossa.
+        Aqueles dias têm um lugar guardado no meu coração pra sempre —
+        e ainda vamos fazer muito mais coisas juntos, muito mais viagens,
+        muito mais histórias que só a gente entende.
+
+        Obrigado por ser você. Por ser doce, forte, engraçada, teimosa às vezes 😌
+        e perfeita do seu jeito. Eu sou muito grato por caminhar ao seu lado.
+      </p>
+
+      <p class="signature">
+        Com todo meu amor,<br>
+        Diego
+      </p>
+
+      <div class="surprise-wrapper">
+        <button class="btn-surprise" id="btnSurpresa">Clique aqui 💗</button>
+
+        <div class="hidden-note" id="hiddenNote">
+          <span class="heart-beat">❤️</span>
+          <strong>Te amo mais do que consigo colocar em palavras.</strong><br><br>
+          Prometo continuar cuidando de você, te apoiando, te ouvindo e te escolhendo,
+          todos os dias da minha vida.
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Feito especialmente para você. <br>
+      Abra de novo sempre que quiser lembrar o quanto é amada. 💞
+    </footer>
+  </div>
+
+  <script>
+    // Chuva de corações
+    const heartsContainer = document.getElementById("hearts-container");
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "❤";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 10 + "px";
+      heart.style.animationDuration = Math.random() * 4 + 4 + "s";
+      heartsContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }
+
+    // Botão surpresa
+    const btn = document.getElementById("btnSurpresa");
+    const note = document.getElementById("hiddenNote");
+    btn.addEventListener("click", () => {
+      note.style.display = note.style.display === "block" ? "none" : "block";
+    });
+
+    // Bloqueio por data/hora
+    const lockScreen = document.getElementById("lockScreen");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const content = document.getElementById("mainContent");
+    const countdown = document.getElementById("countdown");
+
+    const targetDate = new Date("2025-10-29T00:00:00-03:00"); // meia-noite horário de Brasília
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        unlockBtn.style.display = "inline-block";
+        countdown.textContent = "Já é o seu dia! 🎉";
+      } else {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        countdown.textContent = `Faltam ${days}d ${hours}h ${minutes}min`;
+      }
+    }
+
+    setInterval(updateCountdown, 60000);
+    updateCountdown();
+
+    unlockBtn.addEventListener("click", () => {
+      lockScreen.style.display = "none";
+      content.style.display = "block";
+      setInterval(createHeart, 250);
+    });
+  </script>
+</body>
+</html>
